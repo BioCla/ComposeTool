@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  react-frontend:
+    container_name: react-frontend
+    image: node:latest
+    restart: "unless-stopped"
+    volumes:
+      - ../react-frontend:/react-frontend
+    working_dir: /react-frontend
+    stdin_open: true
+    tty: true
+    ports:
+      - "3000:3000"
+    command: ["npm", "run", "docker-start"]

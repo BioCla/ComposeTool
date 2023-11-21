@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  bun-backend:
+    container_name: bun-backend
+    image: oven/bun:latest
+    restart: "unless-stopped"
+    volumes:
+      - ../bun-backend:/bun-backend
+    working_dir: /bun-backend
+    stdin_open: true
+    tty: true
+    ports:
+      - "3001:3001"
+    command: ["bun", "run", "docker-start"]

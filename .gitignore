@@ -1,0 +1,10 @@
+# Temporary executables
+*.exe
+*.dmg
+
+# Custom compose projects
+docker/
+
+# Generated template folders
+react-frontend/
+bun-backend/
