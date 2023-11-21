@@ -235,6 +235,7 @@ version: \"${COMPOSE_VERSION}\"" ./docker/docker-compose.yml
         if [ -z "$SERVICES_LINE" ]; then
             sed -i '' "${VERSION_LINE}a\\
 services:" ./docker/docker-compose.yml
+            SERVICES_LINE=$(sed -n '/^services:/=' ./docker/docker-compose.yml)
         fi
         
         if [ -f "./docker/docker-compose.yml" ] && [ -s "./docker/docker-compose.yml" ]; then
@@ -249,10 +250,10 @@ services:" ./docker/docker-compose.yml
                     echo -e "\033[91mTemplate's docker-compose.yml file is missing the services section.\033[0m"
                     exit 1
                 else
-                    # Replace the first line of the TEMPLATE_SERVICES with a new line
-                    TEMPLATE_SERVICES=$(sed -n "${TEMPLATE_SERVICES_LINE},/^[^ ]/p" ./templates/$1/docker-compose.yml | sed '$d' | sed 's/^services:/\n/g')
-                    SERVICES_LINE=$(sed -n '/^services:/=' ./docker/docker-compose.yml)
-                    # Starting from SERVICES_LINE append the TEMPLATE_SERVICES to it, replacing all the \n with § and then replacing all the § with \n
+                    TEMPLATE_SERVICES=$(sed -n "${TEMPLATE_SERVICES_LINE},/^[^[:blank:]]/p" ./templates/$1/docker-compose.yml | sed 's/^services:/\n/g')
+                    if [[ $(echo "${TEMPLATE_SERVICES}" | tail -n 1 | grep -c "^[^[:blank:]]") -eq 1 ]]; then
+                        TEMPLATE_SERVICES=$(echo "${TEMPLATE_SERVICES}" | sed '$d')
+                    fi
                     sed -i '' "${SERVICES_LINE}a\\
 ${TEMPLATE_SERVICES//$'\n'/§}" ./docker/docker-compose.yml
                     sed -i '' "s/§/\\
@@ -264,7 +265,10 @@ ${TEMPLATE_SERVICES//$'\n'/§}" ./docker/docker-compose.yml
                         echo -e "\n\nvolumes:" >> ./docker/docker-compose.yml
                     fi
                     VOLUMES_LINE=$(sed -n '/^volumes:/=' ./docker/docker-compose.yml)
-                    TEMPLATE_VOLUMES=$(sed -n "${TEMPLATE_VOLUMES_LINE},/^[^ ]/p" ./templates/$1/docker-compose.yml | sed '$d' | sed 's/^volumes:/\n/g')
+                    TEMPLATE_VOLUMES=$(sed -n "${TEMPLATE_VOLUMES_LINE},/^[^[:blank:]]/p" ./templates/$1/docker-compose.yml | sed 's/^volumes://g')
+                    if [[ $(echo "${TEMPLATE_VOLUMES}" | tail -n 1 | grep -c "^[^[:blank:]]") -eq 1 ]]; then
+                        TEMPLATE_VOLUMES=$(echo "${TEMPLATE_VOLUMES}" | sed '$d')
+                    fi
                     sed -i '' "${VOLUMES_LINE}a\\
 ${TEMPLATE_VOLUMES//$'\n'/§}" ./docker/docker-compose.yml
                     sed -i '' "s/§/\\
@@ -276,7 +280,10 @@ ${TEMPLATE_VOLUMES//$'\n'/§}" ./docker/docker-compose.yml
                         echo -e "\n\nnetworks:" >> ./docker/docker-compose.yml
                     fi
                     NETWORKS_LINE=$(sed -n '/^networks:/=' ./docker/docker-compose.yml)
-                    TEMPLATE_NETWORKS=$(sed -n "${TEMPLATE_NETWORKS_LINE},/^[^ ]/p" ./templates/$1/docker-compose.yml | sed '$d' | sed 's/^networks:/\n/g')
+                    TEMPLATE_NETWORKS=$(sed -n "${TEMPLATE_NETWORKS_LINE},/^[^[:blank:]]/p" ./templates/$1/docker-compose.yml | sed 's/^networks:/\n/g')
+                    if [[ $(echo "${TEMPLATE_NETWORKS}" | tail -n 1 | grep -c "^[^[:blank:]]") -eq 1 ]]; then
+                        TEMPLATE_NETWORKS=$(echo "${TEMPLATE_NETWORKS}" | sed '$d')
+                    fi
                     sed -i '' "${NETWORKS_LINE}a\\
 ${TEMPLATE_NETWORKS//$'\n'/§}" ./docker/docker-compose.yml
                     sed -i '' "s/§/\\
@@ -290,7 +297,7 @@ ${TEMPLATE_NETWORKS//$'\n'/§}" ./docker/docker-compose.yml
         fi
 
         chmod +x ./templates/$1/starter.sh
-        ./templates/$1/starter.sh
+        # ./templates/$1/starter.sh
 
         exit 130
 

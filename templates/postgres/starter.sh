@@ -1,1 +1,1 @@
-echo "Starting Postgres..."
+# No additional setup is needed
