@@ -290,7 +290,7 @@ ${TEMPLATE_NETWORKS//$'\n'/§}" ./docker/docker-compose.yml
         fi
 
         chmod +x ./templates/$1/starter.sh
-        # ./templates/$1/starter.sh
+        ./templates/$1/starter.sh
 
         exit 130
 
