@@ -12,3 +12,5 @@ In any order
 And run `make up log`
 And have everything start in the same compose project
 Without errors
+
+(ps1 script is outdated)
