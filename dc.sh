@@ -94,8 +94,6 @@ if [ ! -d "./docker" ]; then
     echo -e "\033[91mNo docker directory found.\033[0m"
     if ask "Would you like to create a new docker directory and a docker-compose.yml file"; then
         mkdir docker && touch docker/docker-compose.yml
-        echo -e "\033[93mPlease edit the docker-compose.yml file to your needs or use the generate command to start from a template.\033[0m"
-        exit 0
     else
         exit 1
     fi
@@ -103,8 +101,6 @@ elif [ ! -f "docker/docker-compose.yml" ]; then
     echo -e "\033[91mNo docker-compose.yml file found.\033[0m"
     if ask "Would you like to create a new one?"; then
         touch docker/docker-compose.yml
-        echo -e "\033[93mPlease edit the docker-compose.yml file to your needs or use the generate command to start from a template.\033[0m"
-        exit 0
     else
         exit 1
     fi
@@ -254,6 +250,7 @@ services:" ./docker/docker-compose.yml
                     if [[ $(echo "${TEMPLATE_SERVICES}" | tail -n 1 | grep -c "^[^[:blank:]]") -eq 1 ]]; then
                         TEMPLATE_SERVICES=$(echo "${TEMPLATE_SERVICES}" | sed '$d')
                     fi
+                    # This is a workaround for the sed command to work on both Linux and MacOS
                     sed -i '' "${SERVICES_LINE}a\\
 ${TEMPLATE_SERVICES//$'\n'/§}" ./docker/docker-compose.yml
                     sed -i '' "s/§/\\
