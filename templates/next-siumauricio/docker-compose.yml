@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  nextui-dashboard-template:
+    container_name: nextui-dashboard-template
+    image: node:latest
+    restart: "unless-stopped"
+    volumes:
+      - ../nextui-dashboard-template:/nextui-dashboard-template
+    working_dir: /nextui-dashboard-template
+    stdin_open: true
+    tty: true
+    ports:
+      - "3002:3002"
+    command: ["npm", "run", "docker-start"]
